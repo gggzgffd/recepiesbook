@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Blog</title>
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=Roboto:wght@300;700&display=swap");
+
+    * {
+      font-family: "Roboto", sans-serif;
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    ::-webkit-scrollbar-track {
+      border-radius: 10px;
+      background-color: rgb(245, 245, 245);
+    }
+
+    ::-webkit-scrollbar {
+      width: 8px;
+      background-color: #ffffff;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      border-radius: 10px;
+      -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, .3);
+      background-color: #989898;
+    }
+
+
+    body {
+      background-color: rgb(240, 240, 240);
+    }
+
+    div.container {
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
+      flex-direction: column;
+      gap: 20px;
+      margin-top: 30px;
+      margin-bottom: 30px;
+
+    }
+
+    div.card {
+      transition: opacity 0.2s ease-out;
+      height: 300px;
+      background-color: white;
+      width: 100%;
+      display: flex;
+      justify-content: flex-start;
+      width: 1024px;
+      border-radius: 25px;
+      box-shadow: rgba(0, 0, 0, 0.1) 0px 10px 15px -3px rgba(0, 0, 0, 0.05) 0px, 4px 6px -2px;
+    }
+
+    div.card.fade-out {
+      opacity: 0;
+
+    }
+
+    img {
+      height: 300px;
+      box-shadow: rgba(0, 0, 0, 0.1) 0px 10px 15px -3px rgba(0, 0, 0, 0.05) 0px, 4px 6px -2px;
+      aspect-ratio: 1.6;
+      object-fit: cover;
+
+    }
+
+    div.navbar {
+      background-color: rgb(50, 50, 50);
+      height: 50px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: sticky;
+      top: 0px;
+      padding: 0px;
+    }
+
+    div.navbar-content {
+      display: flex;
+      align-items: center;
+      width: 1024px;
+      justify-content: space-between;
+
+    }
+
+    div.navbar-content h1 {
+      color: white;
+    }
+
+    button {
+      background-color: rgb(0, 107, 247);
+      color: white;
+      padding: 10px;
+      border-radius: 25px;
+      border: 0;
+      font-weight: bold;
+      cursor: pointer;
+      width: 150px;
+    }
+
+    input {
+      padding: 7px;
+      border-radius: 25px;
+      font-weight: bold;
+      border: 1px solid rgb(170, 170, 170);
+    }
+
+    div.modal-background {
+      position: fixed;
+      top: 0px;
+      left: 0px;
+      width: 100vw;
+      height: 100vh;
+      background-color: rgba(50, 50, 50, 0.5);
+      z-index: 10;
+      display: none;
+      justify-content: center;
+      align-items: center;
+
+    }
+
+    div.modal {
+      padding: 10px;
+      padding-left: 25px;
+      padding-right: 25px;
+      background-color: white;
+      border-radius: 25px;
+      width: 25px;
+      width: 1024px;
+      box-shadow: rgba(0, 0, 0, 0.1) 0px 10px 15px -3px rgba(0, 0, 0, 0.05) 0px, 4px 6px -2px;
+      ;
+
+    }
+
+
+    div.modal-content {
+      display: flex;
+      flex-direction: column;
+
+      margin-top: 10px;
+      ;
+      margin-bottom: 10px;
+    }
+
+    div.modal-content input {
+      margin-bottom: 10px;
+    }
+
+    div.header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    div.card-content {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      padding: 15px;
+    }
+
+    .card .notes {
+      height: 100%;
+      overflow-y: auto;
+
+    }
+
+    div.header span {
+      cursor: pointer;
+    }
+  </style>
+
+  <head>
+
+  <body>
+    <div class="modal-background" id="modal">
+      <div class="modal">
+        <div class="header">
+          <h1>Dodaj recept</h1>
+          <span onclick="closeModal()">X</span>
+        </div>
+        <form id="add-recepie">
+          <div class="modal-content">
+
+            <label>naziv recepta</label>
+            <input name="naziv" required minlength="5" placeholder="naziv recepta">
+            <label>povezava do slike</label>
+            <input name="link" required minlength="5" placeholder="povezava do slike">
+            <label>opis</label>
+            <input name="notes" required minlength="5" placeholder="opis">
+          </div>
+          <button>dodaj</button>
+        </form>
+      </div>
+    </div>
+    <div class="navbar">
+      <div class="navbar-content">
+        <h1>recepti</h1>
+        <div>
+          <button onclick="openModal()">dodaj recept</button>
+          <input id="search" placeholder="išči recept ">
+        </div>
+
+      </div>
+    </div>
+
+    <div class="container" id="list">
+
+
+      <div class="card">
+        <img src="https://lilluna.com/wp-content/uploads/2022/09/easy-pancakes3-resize-9-500x375.jpg" />
+        <div class="card-content">
+          <div class="header">
+
+            <h1>PALAČINKE</h1>
+            <span onclick="deleteRecepie(this)">X</span>
+          </div>
+          <div class="notes">
+
+
+            <br>
+            <br>
+
+
+
+            <h2>V skledo stresemo moko. Dodamo soli in sladkor, dobro premešamo in na sredini naredimo jamico. V jamico
+              ubijemo jajci ter prilijemo približno 50 ml mleka in eno žlico olja.
+
+              <br>
+              <br>
+              Sestavine v jamici pričnemo mešati z ročno metlico ali mešalnikom in med mešanjem postopoma zajemamo moko
+              okoli jamice. Mešamo tako dolgo, da v zmes vmešamo vso moko (po potrebi prilijemo še malo mleka) ter
+              dobimo
+              gladko in gosto zmes brez grudic.
+              <br>
+              <br>
+
+              Nato med nenehnim mešanjem v tankem curku v skledo počasi vlivamo preostalo mleko. Ko prilijemo vse mleko
+              in
+              dobimo gladko in tekoče testo, prenehamo z mešanjem. Masa mora biti tekoča, vendar ne sme biti vodena. Če
+              je
+              vodena, dodamo še malo moke.
+              <br>
+              <br>
+
+              Pripravljeno maso pred peko pustimo počivati 15 do 30 minut, da lahko škrobna zrnca v tekočini nabreknejo.
+              Pred peko jo obvezno še enkrat dobro premešamo.
+            </h2>
+          </div>
+        </div>
+      </div>
+
+
+      <div class="card">
+        <img src="https://cdn1.jernejkitchen.com/sites/default/files/chocolate-brownie-cookies-06-jernejkitchen_0.jpg">
+
+        <div class="card-content">
+          <div class="header">
+
+            <h1>PIŠKOTI</h1>
+            <span onclick="deleteRecepie(this)">X</span>
+          </div>
+
+          <div class="notes">
+            <h2>
+              STOPIMO ČOKOLADO IN MASLO
+              Čokolado in maslo stopimo nad vodno kopeljo ali v mikrovalovni pečici. Ohladimo na sobno temperaturo.
+              <br>
+              <br>
+              PREMEŠAMO V HOMOGENO ZMES
+              V manjši skledi premešamo gladko belo moko, pecilni prašek in ščep soli. V ločeni skledi ali v
+              kuhinjskem
+              robotu penasto stepemo jajca, bel in rjav sladkor. Stepamo približno 3 minute, nato dodamo stopljeno
+              čokoladno
+              zmes in nadaljujemo s stepanjem dokler niso vse sestavine povezane. Med nenehnim stepanjem počasi
+              dodajamo
+              suhe sestavine, da dobimo gosto zmes.
+              <br>
+              <br>
+              ZMES ZA PIŠKOTE DAMO V HLADILNIK
+              Zmes za piškote pustimo v skledi in jih pokrijemo z živilsko folijo na dotik. Postavimo v hladilnik za 1
+              - 2
+              uri (ali čez noč) ali v zamrzovalnik za 30 minut.
+              <br>
+              <br>
+
+              NASVET
+              Zmes postavimo v hladilnik, da nam bo delo kasneje lažje teklo od rok - ko je masa hladna in čvrsta jo
+              lažje
+              oblikujemo.
+              OBLIKUJEMO
+              Pečico segrejemo na 180 °C. Iz ohlajene mase med rokami oblikujemo kot oreh velike kroglice velikosti
+              približno 3 cm (ali 20g). Položimo na pekač obložen s papirjem za peko in vsako kroglico s prstom rahlo
+              pritisnimo ob pekač, da se ne bodo kotalile. Piškote pečemo v dveh intervalih, saj ne bodo šli vsi na en
+              pekač.
+              <br>
+              <br>
+
+              SPEČEMO
+              Pekač s piškoti damo v pečico in postavimo na srednjo rešetko, kjer pečemo 8 - 10 minut pri 180 °C. V
+              kolikor
+              uporabljamo ventilatorsko pečico, potem pečemo piškote 8 - 10 minut pri 165 °C. Piškoti so pečeni, ko so
+              razpokani, a še vedno rahlo mehki. Pazimo, da jih ne prepečemo. Piškote vzamemo iz pečice in pustimo, da
+              se
+              rahlo ohladijo, nato jih prestavimo na rešetko, da se popolnoma ohladijo. Enostavne čokolade piškote
+              hranimo
+              v
+              zaprti škatli za piškote do 14 dni.
+            </h2>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <img src="https://images.24ur.com/media/images/953x459/Oct2020/6877073ef15d00cebec3_62468160.jpg?v=0c92">
+
+        <div class="card-content">
+          <div class="header">
+
+            <h1>ČOKOLADNO LEŠNIKOV NAMAZ</h1>
+            <span onclick="deleteRecepie(this)">X</span>
+          </div>
+
+          <div class="notes">
+            <h2>
+              Pečico segrejemo na 180 stopinj Celzija. Lešnike v eni plasti stresemo na pekač, ki ga za 10 minut
+              potisnemo
+              v
+              ogreto pečico. Na polovici peke pekač dobro potresemo, da se lešniki enakomerno popražijo.
+
+              <br>
+              <br>
+              Popražene lešnike malce ohladimo, nato pa jih stresemo na polovico čiste kuhinjske krpe. Prekrijemo jih z
+              drugo polovico krpe in z dlanmi nežno valjamo toliko časa, da z njih odstranimo večino rjave lupinice.
+              Pustimo, da se popraženi lešniki povsem ohladijo.
+              <br>
+              <br>
+
+              Ohlajene lešnike stresemo v zmogljiv električni sekljalnik ali blender in jih meljemo toliko časa, da
+              dobimo
+              gladko lešnikovo maslo (potrebovali bomo kar nekaj časa, približno 10 minut na visoki hitrosti). Aparat
+              vmes
+              večkrat ustavimo in s stranic posode z lopatko postrgamo zmlete lešnike in jih dodamo k ostali masi.
+              <br>
+              <br>
+
+              Lešnikovemu maslu dodamo ščepec soli, kakav, sladkor v prahu in sončnično olje. Vse skupaj dobro
+              premešamo.
+              <br>
+              <br>
+
+              Čokolado nalomimo ali narežemo na manjše kose in jo dodamo v ognjevarno skledo, ki jo postavimo nad kozico
+              z
+              vrelo vodo. Pazimo, da voda ne vre premočno in da se dno sklede ne dotika vode v kozici. Čokolado počasi
+              stopimo nad soparo.
+              <br>
+              <br>
+
+              Stopljeno čokolado malce ohladimo, nato pa jo dodamo posodo z lešnikovim maslom. Še enkrat dobro
+              premešamo,
+              da
+              se stopljena čokolada in lešnikovo maslo lepo povežeta ter dobimo gladek namaz, ki ga po potrebi dodatno
+              osladimo s sladkorjem v prahu, nato pa ga prelijemo v kozarec, ki ga zapremo s pokrovčkom in shranimo v
+              hladilnik
+            </h2>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+
+
+
+    </div>
+
+    </div>
+
+
+  </body>
+
+  <script>
+    var iskanje = document.getElementById("search");
+
+    var dodajForm = document.getElementById("add-recepie");
+
+    var modal = document.getElementById("modal");
+
+    var list = document.getElementById("list");
+
+    window.addEventListener("load", renderList)
+
+
+    iskanje.addEventListener('keyup', function (event) {
+      var vrednostiskanja = event.target.value.toLowerCase();
+      var recepti = document.getElementsByClassName('card')
+      for (var recept of recepti) {
+        recept.style.display = "none";
+        var nazivrecepta = recept.getElementsByTagName("h1")[0].innerHTML.toLowerCase();
+        var prikazi = nazivrecepta.includes(vrednostiskanja);
+        if (prikazi) {
+          recept.style.display = "flex";
+        } else {
+          recept.style.display = "none";
+        }
+      }
+
+    });
+    dodajForm.addEventListener("submit", function (event) {
+      event.preventDefault();
+
+      var naziv = event.srcElement.elements["naziv"].value;
+      var link = event.srcElement.elements["link"].value;
+      var notes = event.srcElement.elements["notes"].value;
+
+      list.innerHTML += `
+      <div class="card">
+        <img src="${link}"/>
+        
+
+        <div class="card-content">
+          <div class="header">
+
+            <h1>${naziv}</h1>
+            <span onclick="deleteRecepie(this)">X</span>
+          </div>
+
+          <div class="note">
+            ${notes}
+            <h2>
+              
+            </h2>
+          </div>
+        </div>
+      </div>
+      `;
+
+      event.srcElement.reset();
+      closeModal();
+      saveList();
+
+
+    });
+
+    function deleteRecepie(element) {
+      var potrdi = confirm("ali ste prepričani da želite izbrisati recept?")
+      if (potrdi)
+        var kartica = element.parentNode.parentNode.parentNode;
+      kartica.classList.add("fade-out");
+
+      setTimeout(function () {
+
+        kartica.remove();
+        saveList();
+      }, 200);
+    }
+
+    function openModal() {
+      modal.style.display = "flex";
+    }
+
+    function closeModal() {
+      modal.style.display = "none";
+    }
+
+
+    function saveList() {
+      localStorage.setItem("list", list.innerHTML);
+      return novList ?? "";
+    }
+
+    function renderList() {
+      var novList = localStorage.getItem("list");
+      if (novList) {
+
+        list.innerHTML = novList;
+        var recepti = document.getElementsByClassName('card')
+        for (var recept of recepti) {
+          recept.style.display = "flex";
+        }
+      }
+    }
+  </script>
+
+
+</html>
